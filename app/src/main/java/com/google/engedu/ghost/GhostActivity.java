@@ -25,6 +25,8 @@ public class GhostActivity extends AppCompatActivity {
     private TextView gameStatus;
     private Button bChallenge;
     private  Button bRestart;
+    private TextView userScore,computerScore;
+    private int scoreUser=0,scoreComputer=0;
 
     private Random random = new Random();
 
@@ -36,6 +38,8 @@ public class GhostActivity extends AppCompatActivity {
         ghostText =(TextView) findViewById(R.id.ghostText);
         bChallenge = (Button) findViewById(R.id.bChallenge);
         bRestart =(Button) findViewById(R.id.bRestart);
+        userScore=(TextView) findViewById(R.id.scoreUser);
+        computerScore =(TextView) findViewById(R.id.scoreComputer);
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
@@ -58,6 +62,29 @@ public class GhostActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("TEXT", ghostText.getText().toString());
+        outState.putString("LABEL", gameStatus.getText().toString());
+        outState.putInt("SCOREUSER", scoreUser);
+        outState.putInt("SCORECOMPUTER", scoreComputer);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            ghostText.setText(savedInstanceState.getString("TEXT"));
+            gameStatus.setText(savedInstanceState.getString("LABEL"));
+            userTurn = true;  // a saved state is always user turn
+            scoreUser = savedInstanceState.getInt("SCOREUSER");
+            scoreComputer = savedInstanceState.getInt("SCORECOMPUTER");
+            computerScore.setText("Computer's Score: "+ scoreComputer);
+            userScore.setText("User's Score: "+ scoreUser);
+        }
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -109,6 +136,8 @@ public class GhostActivity extends AppCompatActivity {
         String newWord;
         if(text.length()>3  && dictionary.isWord(text)){
             gameStatus.setText("Computer Wins: "+ text + " is a valid word");
+            scoreComputer+=1;
+            computerScore.setText("Computer's Score: "+ scoreComputer);
             return;
         }
         else {
@@ -116,6 +145,8 @@ public class GhostActivity extends AppCompatActivity {
            // Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
             if(newWord==null){
                 gameStatus.setText("Computer Wins: "+ text + " is not a valid prefix");
+                scoreComputer+=1;
+                computerScore.setText("Computer's Score: "+ scoreComputer);
                 return;
             }
             else{
@@ -146,16 +177,22 @@ public class GhostActivity extends AppCompatActivity {
         String newWord;
         if(text.length()>3 && dictionary.isWord(text)){
             gameStatus.setText("User Wins: "+ text + " is a valid word");
+            scoreUser+=1;
+            userScore.setText("User's Score: "+ scoreUser);
             return;
         }
         else{
             newWord =dictionary.getAnyWordStartingWith(text);
             if(newWord==null){
                 gameStatus.setText("User Wins: "+ text + " is not a valid prefix");
+                scoreUser+=1;
+                userScore.setText("User's Score: "+ scoreUser);
                 return;
             }
             else{
                 gameStatus.setText("Computer Wins: "+ text + " is  a valid prefix eg.: "+newWord);
+                scoreComputer+=1;
+                computerScore.setText("Computer's Score: "+ scoreComputer);
                 return;
             }
         }
