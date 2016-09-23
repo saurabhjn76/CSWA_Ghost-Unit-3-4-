@@ -43,7 +43,7 @@ public class GhostActivity extends AppCompatActivity {
         AssetManager assetManager = getAssets();
         try {
             InputStream inputStream = assetManager.open("words.txt");
-            dictionary = new SimpleDictionary(inputStream);
+            dictionary = new FastDictionary(inputStream);
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
             toast.show();
@@ -141,7 +141,7 @@ public class GhostActivity extends AppCompatActivity {
             return;
         }
         else {
-            newWord=dictionary.getAnyWordStartingWith(text);
+            newWord=dictionary.getGoodWordStartingWith(text);
            // Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
             if(newWord==null){
                 gameStatus.setText("Computer Wins: "+ text + " is not a valid prefix");
@@ -182,7 +182,7 @@ public class GhostActivity extends AppCompatActivity {
             return;
         }
         else{
-            newWord =dictionary.getAnyWordStartingWith(text);
+            newWord =dictionary.getGoodWordStartingWith(text);
             if(newWord==null){
                 gameStatus.setText("User Wins: "+ text + " is not a valid prefix");
                 scoreUser+=1;
