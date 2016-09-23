@@ -1,13 +1,17 @@
 package com.google.engedu.ghost;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SimpleDictionary implements GhostDictionary {
     private ArrayList<String> words;
+    private Random rand=new Random();
 
     public SimpleDictionary(InputStream wordListStream) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(wordListStream));
@@ -27,6 +31,26 @@ public class SimpleDictionary implements GhostDictionary {
 
     @Override
     public String getAnyWordStartingWith(String prefix) {
+        Log.e("Prefix:",prefix);
+        if(prefix ==null || prefix.equals("")){
+            return words.get(rand.nextInt(words.size()));
+        }
+        else{
+            int low=0;
+            int high=words.size()-1;
+            int mid;
+            while (low<=high){
+                mid=(low+high)/2;
+                if(words.get(mid).startsWith(prefix))
+                    return words.get(mid);
+                else{
+                    if(words.get(mid).compareTo(prefix)>0)
+                        high=mid-1;
+                    else
+                        low=mid+1;
+                }
+            }
+        }
         return null;
     }
 
